@@ -10,15 +10,15 @@ grpcio==1.10.0
 h5py==2.7.1
 html5lib==0.9999999
 ipykernel==4.8.2
-ipython==6.2.1
+IPython==7.9.0
 ipython-genutils==0.2.0
 jedi==0.11.1
 jupyter-client==5.2.3
 jupyter-core==4.4.0
-Keras==2.1.5
+keras==2.3.1
 kiwisolver==1.0.1
 Markdown==2.6.11
-matplotlib==2.2.2
+matplotlib==3.1.2
 numpy==1.14.2
 parso==0.1.1
 pexpect==4.4.0
@@ -26,7 +26,7 @@ pickleshare==0.7.4
 prompt-toolkit==1.0.15
 protobuf==3.5.2.post1
 ptyprocess==0.5.2
-pydot==1.2.4
+pydot==1.4.1
 pydot-ng==1.0.0
 Pygments==2.2.0
 pyparsing==2.2.0
