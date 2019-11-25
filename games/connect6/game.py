@@ -1065,52 +1065,68 @@ class GameState():
 				return 1
 
 		# \ diagonal direction
-		minLeft = leftBound
-		minUp = upBound
-		maxRight = rightBound
-		maxDown = downBound
+		x = recentRow
+		y = recentCol
 
-		if minLeft < minUp:
-			minUp = recentRow - (recentCol - minLeft)
-		else:
-			minLeft = recentCol - (recentRow - minUp)
+		while((x != 0) and (y != 0)):
+			x -= 1
+			y -= 1
+		startRow = x
+		startCol = y
 
-		if maxRight > maxDown:
-			maxDown = recentRow + (maxRight - recentCol)
-		else:
-			maxRight = recentCol + (maxDown - recentRow)
+		x = recentRow
+		y = recentCol
 
-		for i in range(maxDown - (WIN_COUNT - 1) + 1):
+		while((x != ROW - 1) and (y != COL - 1) ):
+			x += 1
+			y += 1
+		endRow = x
+		endCol = y
+
+		x = startRow
+		y = startCol
+		while((x <= endRow - WIN_COUNT + 1) and (y >= endCol - WIN_COUNT + 1)):
 			sum = 0
 			for j in range(0, WIN_COUNT):
-				sum += self._get2DToAction(minUp + i + j, minLeft + i + j)
+				sum += self._get2DToAction(x + j, y + j)
 			if abs(sum) == 6:
 				return 1
+			x += 1
+			y += 1
 
 		# / diagonal direction
-		minRight = rightBound
-		minUp = upBound
-		maxLeft = leftBound
-		maxDown = downBound
+		x = recentRow
+		y = recentCol
 
-		if (COL - 1) - minRight < minUp:
-			minUp = recentRow - (minRight - recentCol)
-		else:
-			minRight = recentCol + (recentRow - minUp)
+		while((x != 0) and (y != COL - 1)):
+			x -= 1
+			y += 1
+		startRow = x
+		startCol = y
 
-		if (COL - 1) - maxLeft > maxDown:
-			maxDown = recentRow + (recentCol - maxLeft)
-		else:
-			maxLeft = recentCol + (maxDown - recentRow)
+		x = recentRow
+		y = recentCol
 
-		for i in range(maxDown - (WIN_COUNT - 1) + 1):
+		while((x != ROW - 1) and (y != 0) ):
+			x += 1
+			y -= 1
+		endRow = x
+		endCol = y
+
+		x = startRow
+		y = startCol
+		while((x <= endRow - WIN_COUNT + 1) and (y >= endCol + WIN_COUNT - 1)):
 			sum = 0
 			for j in range(0, WIN_COUNT):
-				sum += self._get2DToAction(minUp + i + j, minRight - i - j)
+				sum += self._get2DToAction(x + j, y - j)
 			if abs(sum) == 6:
 				return 1
-		
+			x += 1
+			y -= 1
+
 		return 0
+		
+		
 
 	def _getValue(self):
 		# This is the value of the state for the current player
