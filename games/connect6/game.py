@@ -6,6 +6,7 @@ COL = 19
 INIT_BOARD = np.zeros(ROW * COL, dtype=np.int)
 INIT_CURRENT_PLAYER = -1
 INIT_BOARD[180] = -INIT_CURRENT_PLAYER	# 첫 수로 정중앙에 한 수를 놓음
+WIN_COUNT = 6
 
 class Game:
 
@@ -980,7 +981,6 @@ class GameState():
 		self.binary = self._binary()
 		self.id = self._convertStateToId()
 		self.allowedActions = self._allowedActions()
-		self.isEndGame = self._checkForEndGame()
 		self.value = self._getValue()
 		self.score = self._getScore()
 
@@ -1016,15 +1016,101 @@ class GameState():
 
 		return id
 
-	def _checkForEndGame(self):
-		if np.count_nonzero(self.board) == len(self.board):
+	def _get2DToAction(self, row, col):
+		return self.board[int(row*COL + col)]
+
+	def _checkForEndGame(self, action):
+		stoneNum = np.count_nonzero(self.board)
+		if stoneNum == len(self.board):
 			return 1
+		
+		# 돌 12개 이전이면 무조건 return 0
+		if stoneNum < 12:
+			return 0
+		
+		recentAction = int(action)
+		recentRow = int(recentAction / ROW)
+		recentCol = int(recentAction % ROW)
+		
+		leftBound = recentCol - (WIN_COUNT - 1)
+		if leftBound < 0:
+			leftBound = 0
 
-		for x,y,z,a,b,c in self.winners:
-			if (abs(self.board[x] + self.board[y] + self.board[z] + self.board[a] + self.board[b] + self.board[c]) == 6 * -self.playerTurn):
+		rightBound = recentCol + (WIN_COUNT - 1)
+		if rightBound > COL - 1:
+			rightBound = COL - 1
+
+		upBound = recentRow - (WIN_COUNT - 1)
+		if upBound < 0:
+			upBound = 0
+
+		downBound = recentRow + (WIN_COUNT - 1)
+		if downBound > ROW - 1:
+			downBound = ROW - 1
+
+		# horizon direction	
+		for i in range(leftBound, rightBound - (WIN_COUNT - 1) + 1):
+			sum = 0
+			for j in range(i, i + WIN_COUNT):
+				sum += self._get2DToAction(recentRow, j)
+			if abs(sum) == 6:
 				return 1
-		return 0
 
+		# vertical direction
+		for i in range(upBound, downBound - (WIN_COUNT - 1) + 1):
+			sum = 0
+			for j in range(i, i + WIN_COUNT):
+				sum += self._get2DToAction(j, recentCol)
+			if abs(sum) == 6:
+				return 1
+
+		# \ diagonal direction
+		minLeft = leftBound
+		minUp = upBound
+		maxRight = rightBound
+		maxDown = downBound
+
+		if minLeft < minUp:
+			minUp = recentRow - (recentCol - minLeft)
+		else:
+			minLeft = recentCol - (recentRow - minUp)
+
+		if maxRight > maxDown:
+			maxDown = recentRow + (maxRight - recentCol)
+		else:
+			maxRight = recentCol + (maxDown - recentRow)
+
+		for i in range(maxDown - (WIN_COUNT - 1) + 1):
+			sum = 0
+			for j in range(0, WIN_COUNT):
+				sum += self._get2DToAction(minUp + i + j, minLeft + i + j)
+			if abs(sum) == 6:
+				return 1
+
+		# / diagonal direction
+		minRight = rightBound
+		minUp = upBound
+		maxLeft = leftBound
+		maxDown = downBound
+
+		if (COL - 1) - minRight < minUp:
+			minUp = recentRow - (minRight - recentCol)
+		else:
+			minRight = recentCol + (recentRow - minUp)
+
+		if (COL - 1) - maxLeft > maxDown:
+			maxDown = recentRow + (recentCol - maxLeft)
+		else:
+			maxLeft = recentCol + (maxDown - recentRow)
+
+		for i in range(maxDown - (WIN_COUNT - 1) + 1):
+			sum = 0
+			for j in range(0, WIN_COUNT):
+				sum += self._get2DToAction(minUp + i + j, minRight - i - j)
+			if abs(sum) == 6:
+				return 1
+		
+		return 0
 
 	def _getValue(self):
 		# This is the value of the state for the current player
@@ -1052,7 +1138,7 @@ class GameState():
 		value = 0
 		done = 0
 
-		if newState.isEndGame:
+		if newState._checkForEndGame(action):
 			value = newState.value[0]
 			done = 1
 
