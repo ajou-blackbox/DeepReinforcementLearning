@@ -95,7 +95,7 @@ class GameState():
 			return 1
 		
 		# 돌 12개 이전이면 무조건 return 0
-		if stoneNum < 12:
+		if stoneNum < WIN_COUNT * 2:
 			return 0
 		
 		recentAction = int(action)
@@ -123,7 +123,7 @@ class GameState():
 			sum = 0
 			for j in range(i, i + WIN_COUNT):
 				sum += self._get2DToAction(recentRow, j)
-			if abs(sum) == 6:
+			if abs(sum) == WIN_COUNT:
 				return 1
 
 		# vertical direction
@@ -131,7 +131,7 @@ class GameState():
 			sum = 0
 			for j in range(i, i + WIN_COUNT):
 				sum += self._get2DToAction(j, recentCol)
-			if abs(sum) == 6:
+			if abs(sum) == WIN_COUNT:
 				return 1
 
 		# \ diagonal direction
@@ -157,7 +157,7 @@ class GameState():
 			sum = 0
 			for j in range(WIN_COUNT):
 				sum += self._get2DToAction(startRow + i + j, startCol + i + j)
-			if abs(sum) == 6:
+			if abs(sum) == WIN_COUNT:
 				return 1
 
 
@@ -184,7 +184,7 @@ class GameState():
 			sum = 0
 			for j in range(WIN_COUNT):
 				sum += self._get2DToAction(startRow + i + j, startCol - i - j)
-			if abs(sum) == 6:
+			if abs(sum) == WIN_COUNT:
 				return 1
 
 		return 0
