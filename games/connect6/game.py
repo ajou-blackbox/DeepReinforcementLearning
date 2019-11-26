@@ -221,6 +221,6 @@ class GameState():
 
 
 	def render(self, logger):
-		for r in range(ROW - 1):
+		for r in range(ROW):
 			logger.info([self.pieces[str(x)] for x in self.board[COL*r : (COL*r + COL)]])
 		logger.info('--------------')
