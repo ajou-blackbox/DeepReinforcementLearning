@@ -138,7 +138,7 @@ class GameState():
 		x = recentRow
 		y = recentCol
 
-		while((x != 0) and (y != 0)):
+		while x != 0 and y != 0 and recentRow - x != WIN_COUNT - 1:
 			x -= 1
 			y -= 1
 		startRow = x
@@ -147,28 +147,25 @@ class GameState():
 		x = recentRow
 		y = recentCol
 
-		while((x != ROW - 1) and (y != COL - 1) ):
+		while x != ROW - 1 and y != COL - 1 and x - recentRow != WIN_COUNT - 1:
 			x += 1
 			y += 1
 		endRow = x
 		endCol = y
 
-		x = startRow
-		y = startCol
-		while((x <= endRow - WIN_COUNT + 1) and (y >= endCol - WIN_COUNT + 1)):
+		for i in range(endRow - startRow - (WIN_COUNT - 1) + 1):
 			sum = 0
-			for j in range(0, WIN_COUNT):
-				sum += self._get2DToAction(x + j, y + j)
+			for j in range(WIN_COUNT):
+				sum += self._get2DToAction(startRow + i + j, startCol + i + j)
 			if abs(sum) == 6:
 				return 1
-			x += 1
-			y += 1
+
 
 		# / diagonal direction
 		x = recentRow
 		y = recentCol
 
-		while((x != 0) and (y != COL - 1)):
+		while x != 0 and y != COL - 1 and recentRow - x != WIN_COUNT - 1:
 			x -= 1
 			y += 1
 		startRow = x
@@ -177,22 +174,18 @@ class GameState():
 		x = recentRow
 		y = recentCol
 
-		while((x != ROW - 1) and (y != 0) ):
+		while x != ROW - 1 and y != 0 and x - recentRow != WIN_COUNT - 1:
 			x += 1
 			y -= 1
 		endRow = x
 		endCol = y
 
-		x = startRow
-		y = startCol
-		while((x <= endRow - WIN_COUNT + 1) and (y >= endCol + WIN_COUNT - 1)):
+		for i in range(endRow - startRow - (WIN_COUNT - 1) + 1):
 			sum = 0
-			for j in range(0, WIN_COUNT):
-				sum += self._get2DToAction(x + j, y - j)
+			for j in range(WIN_COUNT):
+				sum += self._get2DToAction(startRow + i + j, startCol - i - j)
 			if abs(sum) == 6:
 				return 1
-			x += 1
-			y -= 1
 
 		return 0
 		
