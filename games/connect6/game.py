@@ -94,8 +94,8 @@ class GameState():
 		if stoneNum == len(self.board):
 			return 1
 		
-		# 돌 12개 이전이면 무조건 return 0
-		if stoneNum < WIN_COUNT * 2:
+		# 돌 WIN_COUNT * 2 - 1개 이전에는 검사하지 않음
+		if stoneNum < WIN_COUNT * 2 - 1:
 			return 0
 		
 		recentAction = int(action)
