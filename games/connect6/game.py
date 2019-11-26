@@ -5,7 +5,7 @@ ROW = 19
 COL = 19
 INIT_BOARD = np.zeros(ROW * COL, dtype=np.int)
 INIT_CURRENT_PLAYER = -1
-INIT_BOARD[180] = -INIT_CURRENT_PLAYER	# 첫 수로 정중앙에 한 수를 놓음
+INIT_BOARD[int(ROW*COL/2)] = -INIT_CURRENT_PLAYER	# 첫 수로 정중앙에 한 수를 놓음
 WIN_COUNT = 6
 
 class Game:
