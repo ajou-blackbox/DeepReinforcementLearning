@@ -91,8 +91,6 @@ class GameState():
 
 	def _checkForEndGame(self, action):
 		stoneNum = np.count_nonzero(self.board)
-		if stoneNum == len(self.board):
-			return 1
 		
 		# 돌 WIN_COUNT * 2 - 1개 이전에는 검사하지 않음
 		if stoneNum < WIN_COUNT * 2 - 1:
@@ -187,6 +185,9 @@ class GameState():
 			if abs(sum) == WIN_COUNT:
 				return 1
 
+		if stoneNum == len(self.board):
+			return 2	# Draw
+
 		return 0
 		
 		
@@ -213,7 +214,7 @@ class GameState():
 		value = 0
 		done = 0
 
-		if newState._checkForEndGame(action):
+		if newState._checkForEndGame(action) != 0:
 			value = newState._getValue(action)[0]
 			done = 1
 
