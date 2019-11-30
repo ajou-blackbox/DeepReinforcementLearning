@@ -1,8 +1,8 @@
 import numpy as np
 import logging
 
-ROW = 19
-COL = 19
+ROW = 9
+COL = 9
 INIT_BOARD = np.zeros(ROW * COL, dtype=np.int)
 INIT_CURRENT_PLAYER = -1
 INIT_BOARD[int(ROW*COL/2)] = -INIT_CURRENT_PLAYER	# 첫 수로 정중앙에 한 수를 놓음
