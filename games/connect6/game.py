@@ -122,7 +122,7 @@ class GameState():
 			for j in range(i, i + WIN_COUNT):
 				sum += self._get2DToAction(recentRow, j)
 			if abs(sum) == WIN_COUNT:
-				return 1
+				return sum / abs(sum)	# 1 or -1
 
 		# vertical direction
 		for i in range(upBound, downBound - (WIN_COUNT - 1) + 1):
@@ -130,7 +130,7 @@ class GameState():
 			for j in range(i, i + WIN_COUNT):
 				sum += self._get2DToAction(j, recentCol)
 			if abs(sum) == WIN_COUNT:
-				return 1
+				return sum / abs(sum)	# 1 or -1
 
 		# \ diagonal direction
 		x = recentRow
@@ -156,7 +156,7 @@ class GameState():
 			for j in range(WIN_COUNT):
 				sum += self._get2DToAction(startRow + i + j, startCol + i + j)
 			if abs(sum) == WIN_COUNT:
-				return 1
+				return sum / abs(sum)	# 1 or -1
 
 
 		# / diagonal direction
@@ -183,7 +183,7 @@ class GameState():
 			for j in range(WIN_COUNT):
 				sum += self._get2DToAction(startRow + i + j, startCol - i - j)
 			if abs(sum) == WIN_COUNT:
-				return 1
+				return sum / abs(sum)	# 1 or -1
 
 		if stoneNum == len(self.board):
 			return 2	# Draw
@@ -196,10 +196,10 @@ class GameState():
 		# This is the value of the state for the current player
 		# i.e. if the previous player played a winning move, you lose
 
-		if self._checkForEndGame(action) == 1:
-			beforeTurnPlayer = self.playerTurn * (np.count_nonzero(self.board) % 2 == 0 and 1 or -1)
-			self.score = (beforeTurnPlayer, beforeTurnPlayer * -1)
-			return (beforeTurnPlayer, beforeTurnPlayer, beforeTurnPlayer * -1)
+		winPlayer = self._checkForEndGame(action)
+		if abs(winPlayer) == 1:
+			self.score = (winPlayer, -winPlayer)
+			return (winPlayer, winPlayer, -winPlayer)
 		self.score = (0, 0)
 		return (0, 0, 0)
 
@@ -208,7 +208,10 @@ class GameState():
 		newBoard = np.array(self.board)
 		newBoard[action]=self.playerTurn
 
-		nextPlayerTurn = self.playerTurn * (np.count_nonzero(self.board) % 2 == 0 and -1 or 1)	# 2n 마다 턴 변경 (첫수는 Default로 깔아둠)
+		nextPlayerTurn = self.playerTurn
+		if np.count_nonzero(newBoard) % 2 == 1:	# 2n + 1 마다 턴 변경
+			nextPlayerTurn *= -1
+
 		newState = GameState(newBoard, nextPlayerTurn)
 
 		value = 0
