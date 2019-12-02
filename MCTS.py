@@ -78,7 +78,7 @@ class MCTS():
 
 				U = self.cpuct * \
 					((1-epsilon) * edge.stats['P'] + epsilon * nu[idx] )  * \
-					np.sqrt(Nb) / (1 + edge.stats['N'])
+					np.sqrt(Nb or 1) / (1 + edge.stats['N'])
 					
 				Q = edge.stats['Q']
 
