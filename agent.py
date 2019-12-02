@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 from IPython import display
 import pylab as pl
 
+from datetime import datetime
+
 
 class User():
 	def __init__(self, name, state_size, action_size):
@@ -205,6 +207,7 @@ class Agent():
 		plt.plot(self.train_policy_loss, 'k--')
 
 		plt.legend(['train_overall_loss', 'train_value_loss', 'train_policy_loss'], loc='lower left')
+		plt.savefig('run/logs/loss_{}.svg'.format(datetime.now().strftime("%Y%m%d-%H%M%S")))
 
 		display.clear_output(wait=True)
 		display.display(pl.gcf())
