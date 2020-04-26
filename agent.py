@@ -95,7 +95,13 @@ class Agent():
 
 		nextState, _, _ = state.takeAction(action)
 
-		NN_value = -self.get_preds(nextState)[0]
+		NN_value = -self.get_preds(nextState)[0]	
+		
+		'''
+		(-) 곱하는 이유가 한 턴씩 진행하는 게임에서는
+		다음 수가 상대의 Value이기 때문?
+		(-) 안붙이고 get_pred 사용한 곳도 있음
+		'''
 
 		lg.logger_mcts.info('ACTION VALUES...%s', pi)
 		lg.logger_mcts.info('CHOSEN ACTION...%d', action)
@@ -106,17 +112,27 @@ class Agent():
 
 
 	def get_preds(self, state):
+
 		#predict the leaf
-		inputToModel = np.array([self.model.convertToModelInput(state)])
 
-		preds = self.model.predict(inputToModel)
-		value_array = preds[0]
-		logits_array = preds[1]
-		value = value_array[0]
+		for i in range(64):
+			inputToModel = np.array([self.model.convertToModelInput(state, i)]) # 비효율
 
-		logits = logits_array[0]
+			preds = self.model.predict(inputToModel)
+			value_array = preds[0]
+			logits_array = preds[1]
+			
+			if i==0:
+				value = np.expand_dims(value_array, axis = 0)
+				logits = np.expand_dims(logits_array, axis = 0)
+
+			else:
+				np.append(value, np.expand_dims(value_array, axis = 0))
+				np.append(logits, np.expand_dims(logits_array, axis = 0))
 
 		allowedActions = state.allowedActions
+
+		# 이하 integrator
 
 		mask = np.ones(logits.shape,dtype=bool)
 		mask[allowedActions] = False

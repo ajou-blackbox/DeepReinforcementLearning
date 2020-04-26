@@ -3,7 +3,10 @@ import logging
 
 ROW = 19
 COL = 19
+frag_ROW = 12
+frag_COL = 12
 INIT_BOARD = np.zeros(ROW * COL, dtype=np.int)
+frag_INIT_BOARD = np.zeros(frag_ROW * frag_COL, dtype=np.int)
 INIT_CURRENT_PLAYER = -1
 INIT_BOARD[int(ROW*COL/2)] = -INIT_CURRENT_PLAYER	# 첫 수로 정중앙에 한 수를 놓음
 WIN_COUNT = 6
@@ -14,12 +17,14 @@ class Game:
 		self.currentPlayer = INIT_CURRENT_PLAYER
 		self.gameState = GameState(INIT_BOARD, INIT_CURRENT_PLAYER)
 		self.actionSpace = INIT_BOARD
+		self.frag_actionSpace = frag_INIT_BOARD
 		self.pieces = {'1':'X', '0': '-', '-1':'O'}
 		self.grid_shape = (ROW, COL)
 		self.input_shape = (2, ROW, COL)
 		self.name = 'connect6'
 		self.state_size = len(self.gameState.binary)
 		self.action_size = len(self.actionSpace)
+		self.frag_action_size = len(self.frag_actionSpace)
 
 	def reset(self):
 		self.gameState = GameState(INIT_BOARD, INIT_CURRENT_PLAYER)
@@ -68,6 +73,22 @@ class GameState():
 
 		other_position = np.zeros(len(self.board), dtype=np.int)
 		other_position[self.board==-self.playerTurn] = 1
+
+		position = np.append(currentplayer_position,other_position)
+
+		return (position)
+
+	def frag_binary(self, num):
+
+		currentplayer_position = np.zeros(len(self.board), dtype=np.int)
+		currentplayer_position[self.board==self.playerTurn] = 1
+		currentplayer_position.reshape(19,19)
+		currentplayer_position[(num/8):(num/8)+12, (num%8):(num%8)+12]
+
+		other_position = np.zeros(len(self.board), dtype=np.int)
+		other_position[self.board==-self.playerTurn] = 1
+		currentplayer_position.reshape(19,19)
+		currentplayer_position[(num/8):(num/8)+12, (num%8):(num%8)+12]
 
 		position = np.append(currentplayer_position,other_position)
 
