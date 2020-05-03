@@ -113,7 +113,7 @@ class Agent():
 	def get_preds(self, state):
 
 		#predict the leaf
-		inputToModel = np.array([self.model.convertToModelInput(state)])
+		inputToModel, frag_allowed_count = np.array([self.model.convertToModelInput(state)])
 
 		for i in range(64):
 
@@ -130,8 +130,21 @@ class Agent():
 				np.append(logits, np.expand_dims(logits_array, axis = 0))
 
 		allowedActions = state.allowedActions
+		# 학습시키는 기능 비활성화 필요
 
 		# 이하 integrator
+		# 각 fragment 별 남은 칸 수 count : 어느 단계에서? - game의 frag_binary로부터
+		# 다 차있는 칸 배제
+		# value : 평균
+
+		total_value = 0.0 # value : float
+		vaild_value_count = 0
+		for i in range(64):
+			if frag_allowed_count[i] != 0:
+				total_value += value[i]
+				vaild_value_count += 1
+		total_value /= vaild_value_count
+
 
 		mask = np.ones(logits.shape,dtype=bool)
 		mask[allowedActions] = False
@@ -141,7 +154,7 @@ class Agent():
 		odds = np.exp(logits)
 		probs = odds / np.sum(odds) ###put this just before the for?
 
-		return ((value, probs, allowedActions))
+		return ((total_value, probs, allowedActions))
 
 
 	def evaluateLeaf(self, leaf, value, done, breadcrumbs):
