@@ -78,19 +78,29 @@ class GameState():
 
 		return (position)
 
-	def frag_binary(self, num):
-
+	def frag_binary(self):
+		
 		currentplayer_position = np.zeros(len(self.board), dtype=np.int)
 		currentplayer_position[self.board==self.playerTurn] = 1
-		currentplayer_position.reshape(19,19)
-		currentplayer_position[(num/8):(num/8)+12, (num%8):(num%8)+12]
+		currentplayer_position = np.reshape(currentplayer_position, (19,19))
 
 		other_position = np.zeros(len(self.board), dtype=np.int)
 		other_position[self.board==-self.playerTurn] = 1
-		currentplayer_position.reshape(19,19)
-		currentplayer_position[(num/8):(num/8)+12, (num%8):(num%8)+12]
+		other_position = np.reshape(other_position, (19,19))
+		
+		for i in range(63):
+			currentplayer_position_copy = np.copy(currentplayer_position[(i/8):(i/8)+12, (i%8):(i%8)+12])
+			currentplayer_position_copy = np.ravel(currentplayer_position_copy)		# ravel 출력이 ndarray안됨
 
-		position = np.append(currentplayer_position,other_position)
+			other_position_copy = np.copy(other_position[(i/8):(i/8)+12, (i%8):(i%8)+12])
+			other_position_copy = np.ravel(other_position_copy)
+
+			frag_position = np.append(currentplayer_position_copy, other_position_copy)
+			
+			if i==0:
+				position = np.expand_dims(frag_position, axis = 0)
+			else:
+				np.append(position, np.expand_dims(frag_position, axis = 0))
 
 		return (position)
 
