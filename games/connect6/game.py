@@ -5,6 +5,7 @@ ROW = 19
 COL = 19
 frag_ROW = 12
 frag_COL = 12
+frag_NUM = (ROW - frag_ROW + 1)*(COL - frag_COL + 1)
 INIT_BOARD = np.zeros(ROW * COL, dtype=np.int)
 frag_INIT_BOARD = np.zeros(frag_ROW * frag_COL, dtype=np.int)
 INIT_CURRENT_PLAYER = -1
@@ -88,6 +89,8 @@ class GameState():
 		other_position[self.board==-self.playerTurn] = 1
 		other_position = np.reshape(other_position, (19,19))
 		
+		frag_allowed_count = np.zeros(frag_NUM)
+
 		for i in range(63):
 			currentplayer_position_copy = np.copy(currentplayer_position[(i/8):(i/8)+12, (i%8):(i%8)+12])
 			currentplayer_position_copy = np.ravel(currentplayer_position_copy)		# ravel 출력이 ndarray안됨
@@ -102,7 +105,14 @@ class GameState():
 			else:
 				np.append(position, np.expand_dims(frag_position, axis = 0))
 
-		return (position)
+			# get number of available action in a fragment
+			overlaped_position = currentplayer_position_copy + other_position_copy
+			
+			for j in range(len(overlaped_position)):
+				if overlaped_position[j] == 0:
+					frag_allowed_count[i] += 1
+
+		return (position, frag_allowed_count)
 
 	def _convertStateToId(self):
 		player1_position = np.zeros(len(self.board), dtype=np.int)

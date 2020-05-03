@@ -240,11 +240,11 @@ class Residual_CNN(Gen_Model):
 		return model
 
 	def convertToModelInput(self, state):
-		frag_inputToModel =  state.frag_binary() #np.append(state.binary, [(state.playerTurn + 1)/2] * self.input_dim[1] * self.input_dim[2])
+		frag_inputToModel,frag_allowed_count =  state.frag_binary() #np.append(state.binary, [(state.playerTurn + 1)/2] * self.input_dim[1] * self.input_dim[2])
 		for i in range(63):
 			reshaped_inputToModel = np.reshape(frag_inputToModel[i], self.input_dim) 
 			if i==0:
 				inputToModel = np.expand_dims(reshaped_inputToModel, axis = 0)
 			else:
 				np.append(inputToModel, np.expand_dims(reshaped_inputToModel, axis = 0))
-		return (inputToModel)
+		return (inputToModel, frag_allowed_count)
