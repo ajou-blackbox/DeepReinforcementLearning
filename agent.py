@@ -113,11 +113,11 @@ class Agent():
 	def get_preds(self, state):
 
 		#predict the leaf
+		inputToModel = np.array([self.model.convertToModelInput(state)])
 
 		for i in range(64):
-			inputToModel = np.array([self.model.convertToModelInput(state, i)]) # 비효율
 
-			preds = self.model.predict(inputToModel)
+			preds = self.model.predict(inputToModel[i])
 			value_array = preds[0]
 			logits_array = preds[1]
 			
