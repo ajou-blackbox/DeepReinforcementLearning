@@ -129,8 +129,8 @@ class Agent():
 				logits = np.expand_dims(logits_array, axis = 0)
 
 			else:
-				np.append(value, np.expand_dims(value_array, axis = 0))
-				np.append(logits, np.expand_dims(logits_array, axis = 0))
+				value = np.append(value, np.expand_dims(value_array, axis = 0))
+				logits_array = np.append(logits, np.expand_dims(logits_array, axis = 0))
 
 		allowedActions = state.allowedActions
 		# 학습시키는 기능 비활성화 필요
