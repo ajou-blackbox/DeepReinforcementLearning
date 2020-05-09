@@ -130,31 +130,48 @@ class Agent():
 
 			else:
 				value = np.append(value, np.expand_dims(value_array, axis = 0))
-				logits_array = np.append(logits, np.expand_dims(logits_array, axis = 0))
+				logits = np.append(logits, np.expand_dims(logits_array, axis = 0))
 
 		allowedActions = state.allowedActions
 		# 학습시키는 기능 비활성화 필요
 
-		# 이하 integrator
-		# 각 fragment 별 남은 칸 수 count : 어느 단계에서? - game의 frag_binary로부터
-		# 다 차있는 칸 배제
-		# value : 평균
+		# Integrator
 
+		# Value 합산
 		total_value = 0.0 # value : float
 		vaild_value_count = 0
 		for i in range(64):
-			if frag_allowed_count[i] != 0:
+			if frag_allowed_count[i] != 0:	# 남은 수 없는 fragment 배제
 				total_value += value[i]
 				vaild_value_count += 1
 		total_value /= vaild_value_count
 
+		# Policy 가중치
+		frag_policy_weight = []
+		for i in range(64):
+			frag_policy_weight[i] = abs(value[i]) + 1
+			frag_policy_weight[i] *= frag_allowed_count[i]
 
-		mask = np.ones(logits.shape,dtype=bool)
+		# 19*19에 합산
+		number_count = np.zeros(len(self.state_size), dtype=np.int)
+		total_logits = np.zeros(len(self.action_size), dtype=np.int)
+		for n in range(64):
+			start_num = n/8*19 + n%8
+			for i in range(12):
+				for j in range(12):
+					now_num = start_num + i*19 + j
+					total_logits[now_num] += logits[n][i*12 + j] * frag_policy_weight[n]
+					number_count[now_num] += 1
+		for i in range(len(self.action_size)):
+			total_logits[i] /= number_count[i]
+
+		# 둘 수 없는 곳 policy 낮게 만듬
+		mask = np.ones(total_logits.shape,dtype=bool)
 		mask[allowedActions] = False
-		logits[mask] = -100
+		total_logits[mask] = -100		# AllowedAction 아닌 곳은 e^(-100) : 작은 수
 
 		#SOFTMAX
-		odds = np.exp(logits)
+		odds = np.exp(total_logits)
 		probs = odds / np.sum(odds) ###put this just before the for?
 
 		return ((total_value, probs, allowedActions))
