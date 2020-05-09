@@ -113,7 +113,10 @@ class Agent():
 	def get_preds(self, state):
 
 		#predict the leaf
-		inputToModel, frag_allowed_count = np.array([self.model.convertToModelInput(state)])
+		convertedModelInput, frag_allowed_count = self.model.convertToModelInput(state)
+		inputToModel = np.expand_dims(np.array(convertedModelInput[0]), axis = 0)
+		for i in range (1,64): 
+			inputToModel = np.append(inputToModel, np.expand_dims(np.array(convertedModelInput[i]), axis = 0))
 
 		for i in range(64):
 

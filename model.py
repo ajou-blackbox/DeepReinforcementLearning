@@ -246,5 +246,5 @@ class Residual_CNN(Gen_Model):
 			if i==0:
 				inputToModel = np.expand_dims(reshaped_inputToModel, axis = 0)
 			else:
-				np.append(inputToModel, np.expand_dims(reshaped_inputToModel, axis = 0))
+				inputToModel = np.append(inputToModel, np.expand_dims(reshaped_inputToModel, axis = 0))
 		return (inputToModel, frag_allowed_count)

@@ -103,7 +103,7 @@ class GameState():
 			if i==0:
 				position = np.expand_dims(frag_position, axis = 0)
 			else:
-				np.append(position, np.expand_dims(frag_position, axis = 0))
+				position = np.append(position, np.expand_dims(frag_position, axis = 0))
 
 			# get number of available action in a fragment
 			overlaped_position = currentplayer_position_copy + other_position_copy
