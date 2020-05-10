@@ -113,26 +113,38 @@ class Agent():
 	def get_preds(self, state):
 
 		#predict the leaf
+		lg.logger_debug.info('START...')
 		convertedModelInput, frag_allowed_count = self.model.convertToModelInput(state)
+		lg.logger_debug.info('A...')
 		inputToModel = np.expand_dims(np.array(convertedModelInput[0]), axis = 0)
+		lg.logger_debug.info('B...')
 		for i in range (1,64): 
 			inputToModel = np.append(inputToModel, np.expand_dims(np.array(convertedModelInput[i]), axis = 0))
+			lg.logger_debug.info('C %d...',i)
 
 		for i in range(64):
 
 			preds = self.model.predict(inputToModel[i])
+			lg.logger_debug.info('D %d...',i)
 			value_array = preds[0]
+			lg.logger_debug.info('E %d...',i)
 			logits_array = preds[1]
+			lg.logger_debug.info('F %d...',i)
 			
 			if i==0:
 				value = np.expand_dims(value_array, axis = 0)
+				lg.logger_debug.info('G %d...',i)
 				logits = np.expand_dims(logits_array, axis = 0)
+				lg.logger_debug.info('H %d...',i)
 
 			else:
 				value = np.append(value, np.expand_dims(value_array, axis = 0))
+				lg.logger_debug.info('I %d...',i)
 				logits = np.append(logits, np.expand_dims(logits_array, axis = 0))
+				lg.logger_debug.info('J %d...',i)
 
 		allowedActions = state.allowedActions
+		lg.logger_debug.info('K...')
 		# 학습시키는 기능 비활성화 필요
 
 		# Integrator

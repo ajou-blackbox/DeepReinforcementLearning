@@ -71,16 +71,31 @@ print('\n')
 ######## CREATE THE PLAYERS ########
 
 current_player = Agent('current_player', env.state_size, env.action_size, config.MCTS_SIMS, config.CPUCT, current_NN)
-best_player = Agent('best_player', env.state_size, env.action_size, config.MCTS_SIMS, config.CPUCT, best_NN)
-#user_player = User('player1', env.state_size, env.action_size)
+current_player2 = Agent('current_player2', env.state_size, env.action_size, config.MCTS_SIMS, config.CPUCT, current_NN)
+# best_player = Agent('best_player', env.state_size, env.action_size, config.MCTS_SIMS, config.CPUCT, best_NN)
+# user_player = User('player1', env.state_size, env.action_size)
 iteration = 0
 
 while 1:
 
+    ######## TOURNAMENT for Test ########
+    print('TOURNAMENT...')
+    scores, _, points, sp_scores = playMatches(current_player, current_player2, config.EVAL_EPISODES, lg.logger_tourney, turns_until_tau0 = 0, memory = None)
+    print('\nSCORES')
+    print(scores)
+    print('\nSTARTING PLAYER / NON-STARTING PLAYER SCORES')
+    print(sp_scores)
+    print(points)
+
+    print('\n\n')
+    
+    '''
     iteration += 1
     reload(lg)
     reload(config)
+    '''
     
+    '''
     print('ITERATION NUMBER ' + str(iteration))
     
     lg.logger_main.info('BEST PLAYER VERSION: %d', best_player_version)
@@ -123,15 +138,16 @@ while 1:
             lg.logger_memory.info('INPUT TO MODEL: %s', current_player.model.convertToModelInput(s['state']))
 
             s['state'].render(lg.logger_memory)
+
             
         ######## TOURNAMENT ########
         print('TOURNAMENT...')
-        scores, _, points, sp_scores = playMatches(best_player, current_player, config.EVAL_EPISODES, lg.logger_tourney, turns_until_tau0 = 0, memory = None)
+        scores, _, points, sp_scores = playMatches(current_player, user_player, config.EVAL_EPISODES, lg.logger_tourney, turns_until_tau0 = 0, memory = None)
         print('\nSCORES')
         print(scores)
         print('\nSTARTING PLAYER / NON-STARTING PLAYER SCORES')
         print(sp_scores)
-        #print(points)
+        print(points)
 
         print('\n\n')
 
@@ -140,5 +156,7 @@ while 1:
             best_NN.model.set_weights(current_NN.model.get_weights())
             best_NN.write(env.name, best_player_version)
 
+    
     else:
         print('MEMORY SIZE: ' + str(len(memory.ltmemory)))
+    '''    
