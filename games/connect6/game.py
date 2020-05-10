@@ -92,10 +92,10 @@ class GameState():
 		frag_allowed_count = np.zeros(frag_NUM)
 
 		for i in range(63):
-			currentplayer_position_copy = np.copy(currentplayer_position[(i/8):(i/8)+12, (i%8):(i%8)+12])
+			currentplayer_position_copy = np.copy(currentplayer_position[int(i/8):int(i/8)+12, (i%8):(i%8)+12])
 			currentplayer_position_copy = np.ravel(currentplayer_position_copy)		# ravel 출력이 ndarray안됨
 
-			other_position_copy = np.copy(other_position[(i/8):(i/8)+12, (i%8):(i%8)+12])
+			other_position_copy = np.copy(other_position[int(i/8):int(i/8)+12, int(i%8):(i%8)+12])
 			other_position_copy = np.ravel(other_position_copy)
 
 			frag_position = np.append(currentplayer_position_copy, other_position_copy)

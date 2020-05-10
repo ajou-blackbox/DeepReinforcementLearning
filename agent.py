@@ -168,7 +168,7 @@ class Agent():
 		number_count = np.zeros(len(self.state_size), dtype=np.int)
 		total_logits = np.zeros(len(self.action_size), dtype=np.int)
 		for n in range(64):
-			start_num = n/8*19 + n%8
+			start_num = int(n/8)*19 + n%8
 			for i in range(12):
 				for j in range(12):
 					now_num = start_num + i*19 + j
