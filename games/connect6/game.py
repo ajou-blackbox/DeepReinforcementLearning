@@ -21,6 +21,7 @@ class Game:
 		self.frag_actionSpace = frag_INIT_BOARD
 		self.pieces = {'1':'X', '0': '-', '-1':'O'}
 		self.grid_shape = (ROW, COL)
+		self.frag_grid_shape = (frag_ROW, frag_COL)
 		self.input_shape = (2, ROW, COL)
 		self.name = 'connect6'
 		self.state_size = len(self.gameState.binary)
