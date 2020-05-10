@@ -156,7 +156,5 @@ while 1:
             best_NN.model.set_weights(current_NN.model.get_weights())
             best_NN.write(env.name, best_player_version)
 
-    
     else:
         print('MEMORY SIZE: ' + str(len(memory.ltmemory)))
-    '''    

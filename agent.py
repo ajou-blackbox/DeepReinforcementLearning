@@ -138,10 +138,8 @@ class Agent():
 				lg.logger_debug.info('H %d...',i)
 
 			else:
-				value = np.append(value, np.expand_dims(value_array, axis = 0))
-				lg.logger_debug.info('I %d...',i)
-				logits = np.append(logits, np.expand_dims(logits_array, axis = 0))
-				lg.logger_debug.info('J %d...',i)
+				value = np.vstack((value, value_array))
+				logits = np.vstack((logits, logits_array))
 
 		allowedActions = state.allowedActions
 		lg.logger_debug.info('K...')
