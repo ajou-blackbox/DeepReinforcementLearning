@@ -95,7 +95,11 @@ class Agent():
 
 		nextState, _, _ = state.takeAction(action)
 
-		NN_value = -self.get_preds(nextState)[0]
+		if nextState.playerTurn == state.playerTurn:
+			NN_value = self.get_preds(nextState)[0]
+        
+		else:
+			NN_value = -self.get_preds(nextState)[0]
 
 		lg.logger_mcts.info('ACTION VALUES...%s', pi)
 		lg.logger_mcts.info('CHOSEN ACTION...%d', action)
