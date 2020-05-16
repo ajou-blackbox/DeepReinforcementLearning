@@ -5,7 +5,7 @@
 import time
 import sys
 
-ITERATION_LIMIT = None	# None이면 무한 반복
+ITERATION_LIMIT = 1	# None이면 무한 반복
 TIME_LIMIT = None		# None이면 무한 반복, 시간[h] 단위로 입력
 
 
