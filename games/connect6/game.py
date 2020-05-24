@@ -1,11 +1,11 @@
 import numpy as np
 import logging
 
-ROW = 13
-COL = 13
+ROW = 12
+COL = 12
 INIT_BOARD = np.zeros(ROW * COL, dtype=np.int)
 INIT_CURRENT_PLAYER = -1
-INIT_BOARD[int(ROW*COL/2)] = -INIT_CURRENT_PLAYER	# 첫 수로 정중앙에 한 수를 놓음
+# INIT_BOARD[int(ROW*COL/2)] = -INIT_CURRENT_PLAYER	# 첫 수로 정중앙에 한 수를 놓음
 WIN_COUNT = 6
 
 class Game:
@@ -209,7 +209,7 @@ class GameState():
 		newBoard[action]=self.playerTurn
 
 		nextPlayerTurn = self.playerTurn
-		if np.count_nonzero(newBoard) % 2 == 1:	# 2n + 1 마다 턴 변경
+		if np.count_nonzero(newBoard) % 2 == 1:	# 2n - 1 turn 마다 player 변경
 			nextPlayerTurn *= -1
 
 		newState = GameState(newBoard, nextPlayerTurn)
