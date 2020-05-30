@@ -54,7 +54,6 @@ class MCTS():
 
 		breadcrumbs = []
 		currentNode = self.root
-		self.recentnodeid = []
 
 		done = 0
 		value = 0
