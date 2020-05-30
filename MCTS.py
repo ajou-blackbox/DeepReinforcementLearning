@@ -43,6 +43,7 @@ class MCTS():
 		self.tree = {}
 		self.cpuct = cpuct
 		self.addNode(root)
+		self.recentnodeid = []
 	
 	def __len__(self):
 		return len(self.tree)
@@ -53,6 +54,7 @@ class MCTS():
 
 		breadcrumbs = []
 		currentNode = self.root
+		self.recentnodeid = []
 
 		done = 0
 		value = 0
@@ -95,6 +97,8 @@ class MCTS():
 
 			newState, value, done = currentNode.state.takeAction(simulationAction) #the value of the newState from the POV of the new playerTurn
 			currentNode = simulationEdge.outNode
+			if currentNode.id not in self.recentnodeid:	
+				self.recentnodeid.append(currentNode.id)
 			breadcrumbs.append(simulationEdge)
 
 		lg.logger_mcts.info('DONE...%d', done)
