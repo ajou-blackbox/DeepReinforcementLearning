@@ -241,6 +241,6 @@ class Agent():
 		# self.mcts.root = self.mcts.tree[state.id]
 		temp_mcts = mc.MCTS(self.mcts.tree[state.id], self.cpuct)
 		for idx, nodeid in enumerate(self.mcts.recentnodeid):
-			if nodeid in self.mcts.tree	
+			if nodeid in self.mcts.tree	:
 				temp_mcts.addNode(self.mcts.tree[nodeid])
 		self.mcts = temp_mcts
