@@ -38,6 +38,9 @@ class Gen_Model():
 	def read(self, game, run_number, version):
 		return load_model( './run/models/version' + "{0:0>4}".format(version) + '.h5', custom_objects={'softmax_cross_entropy_with_logits': softmax_cross_entropy_with_logits})
 
+	def read_tmp_selfplay(self, game):
+		return load_model( './run/models/model_temp.h5', custom_objects={'softmax_cross_entropy_with_logits': softmax_cross_entropy_with_logits})
+
 	def read_tmp(self, game):
 		return load_model( './run/models/training_model.h5', custom_objects={'softmax_cross_entropy_with_logits': softmax_cross_entropy_with_logits})
 

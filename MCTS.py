@@ -96,8 +96,10 @@ class MCTS():
 
 			newState, value, done = currentNode.state.takeAction(simulationAction) #the value of the newState from the POV of the new playerTurn
 			currentNode = simulationEdge.outNode
-			if currentNode.id not in self.recentnodeid:	
+
+			if currentNode.id not in self.recentnodeid:		# 방문 노드 저장(root는 제외)
 				self.recentnodeid.append(currentNode.id)
+
 			breadcrumbs.append(simulationEdge)
 
 		lg.logger_mcts.info('DONE...%d', done)
