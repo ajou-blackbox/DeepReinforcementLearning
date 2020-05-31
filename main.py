@@ -23,8 +23,6 @@ from settings import run_folder, run_archive_folder
 import initialise
 import pickle
 
-from limiter import Limiter
-
 
 lg.logger_main.info('=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*')
 lg.logger_main.info('=*=*=*=*=*=.      NEW LOG      =*=*=*=*=*')
@@ -77,8 +75,6 @@ best_player = Agent('best_player', env.state_size, env.action_size, config.MCTS_
 #user_player = User('player1', env.state_size, env.action_size)
 iteration = 0
 
-lim = Limiter()
-
 while 1:
 
     iteration += 1
@@ -104,18 +100,13 @@ while 1:
         current_player.replay(memory.ltmemory)
         print('')
 
-        if (iteration % 5 == 0) or (lim.check_time(auto = False)):  # 시간 검사
+        if iteration % 5 == 0:
             pickle.dump( memory, open( run_folder + "memory/memory" + str(iteration).zfill(4) + ".p", "wb" ) )
-
-        lim.check_time(auto = True)
-
 
         lg.logger_memory.info('====================')
         lg.logger_memory.info('NEW MEMORIES')
         lg.logger_memory.info('====================')
         
-        
-
         memory_samp = random.sample(memory.ltmemory, min(1000, len(memory.ltmemory)))
         
         for s in memory_samp:
@@ -151,6 +142,3 @@ while 1:
 
     else:
         print('MEMORY SIZE: ' + str(len(memory.ltmemory)))
-
-    lim.check_time(auto = True) # 시간 검사
-    lim.check_iteration(iteration)  # iteration 수 검사
