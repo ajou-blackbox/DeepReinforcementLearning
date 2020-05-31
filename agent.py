@@ -236,10 +236,11 @@ class Agent():
 		self.root = mc.Node(state)
 		self.mcts = mc.MCTS(self.root, self.cpuct)
 
-	def changeRootMCTS(self, state):	# Tree dict에 없는 Key 문제 지속 시 addNode하기 전 검사동작 필요(성능 낮아질 것)
+	def changeRootMCTS(self, state):	
 		lg.logger_mcts.info('****** CHANGING ROOT OF MCTS TREE TO %s FOR AGENT %s ******', state.id, self.name)
 		# self.mcts.root = self.mcts.tree[state.id]
 		temp_mcts = mc.MCTS(self.mcts.tree[state.id], self.cpuct)
 		for idx, nodeid in enumerate(self.mcts.recentnodeid):
-			temp_mcts.addNode(self.mcts.tree[nodeid])
+			if nodeid in self.mcts.tree:	# 최근 방문한 노드로 기록되었는데 트리에 없는 문제때문에 if문 추가
+				temp_mcts.addNode(self.mcts.tree[nodeid])
 		self.mcts = temp_mcts
