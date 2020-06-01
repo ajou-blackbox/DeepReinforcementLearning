@@ -87,7 +87,7 @@ class Agent():
 			lg.logger_mcts.info('***************************')
 			self.simulate()
 
-		lg.logger_test.info('%s Tree size : %d',self.name, self.mcts.__len__()) # MCTS 크기 확인
+		
 
 		#### get action values
 		pi, values = self.getAV(1)
