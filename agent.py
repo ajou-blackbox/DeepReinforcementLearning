@@ -149,8 +149,7 @@ class Agent():
 			for idx, action in enumerate(allowedActions):
 				newState, _, _ = leaf.state.takeAction(action)
 				
-				if newState.id not in self.mcts.recentnodeid:	
-					self.mcts.recentnodeid.append(newState.id)
+				self.mcts.recentnodeid[newState.id] = newState.id
 
 				if newState.id not in self.mcts.tree:
 					node = mc.Node(newState)
@@ -240,7 +239,7 @@ class Agent():
 		lg.logger_mcts.info('****** CHANGING ROOT OF MCTS TREE TO %s FOR AGENT %s ******', state.id, self.name)
 		# self.mcts.root = self.mcts.tree[state.id]
 		temp_mcts = mc.MCTS(self.mcts.tree[state.id], self.cpuct)
-		for idx, nodeid in enumerate(self.mcts.recentnodeid):
+		for (idx, nodeid) in enumerate(self.mcts.recentnodeid):
 			if nodeid in self.mcts.tree:	# 최근 방문한 노드로 기록되었는데 트리에 없는 문제때문에 if문 추가
 				temp_mcts.addNode(self.mcts.tree[nodeid])
 		self.mcts = temp_mcts

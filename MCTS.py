@@ -43,7 +43,7 @@ class MCTS():
 		self.tree = {}
 		self.cpuct = cpuct
 		self.addNode(root)
-		self.recentnodeid = []
+		self.recentnodeid = {}
 	
 	def __len__(self):
 		return len(self.tree)
@@ -97,8 +97,7 @@ class MCTS():
 			newState, value, done = currentNode.state.takeAction(simulationAction) #the value of the newState from the POV of the new playerTurn
 			currentNode = simulationEdge.outNode
 
-			if currentNode.id not in self.recentnodeid:		# 방문 노드 저장(root는 제외)
-				self.recentnodeid.append(currentNode.id)
+			self.recentnodeid[currentNode.id] = currentNode.id
 
 			breadcrumbs.append(simulationEdge)
 
