@@ -39,6 +39,21 @@ def evel_wait():
         else:
             break
 
+def eval_wait_full():
+    while 1:
+        f = open('evalcount.txt', mode = 'rt', encoding = 'utf-8')
+        player1_score = int(f.readline())
+        drawn_score = int(f.readline())
+        player2_score = int(f.readline())
+        eval_count = int(f.readline())
+        f.close
+        
+        if eval_count < config.EVAL_EPISODES:
+            print('Wating for evaluations...')
+            time.sleep(120)
+        else:
+            break
+
 def eval_reset():
     f = open('evalcount.txt', mode = 'wt', encoding = 'utf-8')
     f.write(str(0)+'\n')
