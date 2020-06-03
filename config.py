@@ -1,8 +1,8 @@
 #### SELF PLAY
 EPISODES = 10
-MCTS_SIMS = 640
+MCTS_SIMS = 300
 MEMORY_SIZE = 30000
-TURNS_UNTIL_TAU0 = 10 # turn on which it starts playing deterministically
+TURNS_UNTIL_TAU0 = 7 # turn on which it starts playing deterministically
 CPUCT = 1
 EPSILON = 0.2
 ALPHA = 0.8
@@ -26,7 +26,7 @@ HIDDEN_CNN_LAYERS = [
 	]
 
 #### EVALUATION
-EVAL_MCTS_SIMS = 100
+EVAL_MCTS_SIMS = 50
 EVAL_EPISODES = 15
 SCORING_THRESHOLD = 1.3	# 무승부 없으면 9:6 이상
 
