@@ -57,6 +57,11 @@ def eval_reset():    # current_player 승리 시 1, 아니면 0
     #    evalcount[4] += 1
     write_evalcount(evalcount)
 
+def init_best_player_version(version):
+    evalcount = read_evalcount()
+    evalcount[4] = version
+    write_evalcount(evalcount)
+
 
 def add_score(scores, player1, player2):
 # game eval횟수만큼 채웠으면 더 이상 돌리지 않고 대기
@@ -96,7 +101,9 @@ def read_evalcount():
 
 def write_evalcount(lines):
         f = open('evalcount.txt', mode = 'wt', encoding = 'utf-8')
-        f.writelines(lines)
+        lines = list(map(str, lines))
+        for i in range(len(lines)):
+            f.writelines(lines[i] + '\n')
         f.close
 
         return 0
