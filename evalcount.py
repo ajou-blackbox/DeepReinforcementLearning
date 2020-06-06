@@ -4,36 +4,34 @@ from agent import Agent, User
 
 sleep_time = 30
 
-def eval_end():
-    f = open('evalcount.txt', mode = 'rt', encoding = 'utf-8')
-    player1_score = int(f.readline())
-    drawn_score = int(f.readline())
-    player2_score = int(f.readline())
-    eval_count = int(f.readline())
-    f.close
+# 0 : player1_score
+# 1 : drawn_score
+# 2 : player2 score
+# 3 : eval_count
+# 4 : best_player_version
 
-    if eval_count < config.EVAL_EPISODES:
-        eval_count += 1
-        f = open('evalcount.txt', mode = 'wt', encoding = 'utf-8')
-        f.write(str(player1_score)+'\n')
-        f.write(str(drawn_score)+'\n')
-        f.write(str(player2_score)+'\n')
-        f.write(str(eval_count))
-        f.close
+def eval_end():
+    #f = open('evalcount.txt', mode = 'rt', encoding = 'utf-8')
+    #player1_score = int(f.readline())
+    #drawn_score = int(f.readline())
+    #player2_score = int(f.readline())
+    #eval_count = int(f.readline())
+    #f.close
+
+    evalcount = read_evalcount()
+
+    if evalcount[3] < config.EVAL_EPISODES:
+        evalcount[3] += 1
+        write_evalcount(evalcount)
         return 0
     else:
         return 1
 
 def evel_wait():
     while 1:
-        f = open('evalcount.txt', mode = 'rt', encoding = 'utf-8')
-        player1_score = int(f.readline())
-        drawn_score = int(f.readline())
-        player2_score = int(f.readline())
-        eval_count = int(f.readline())
-        f.close
+        evalcount = read_evalcount()
         
-        if eval_count >= config.EVAL_EPISODES:
+        if evalcount[3] >= config.EVAL_EPISODES:
             print('Wating for other evaluation...')
             time.sleep(sleep_time)
         else:
@@ -41,55 +39,68 @@ def evel_wait():
 
 def eval_wait_full():
     while 1:
-        f = open('evalcount.txt', mode = 'rt', encoding = 'utf-8')
-        player1_score = int(f.readline())
-        drawn_score = int(f.readline())
-        player2_score = int(f.readline())
-        eval_count = int(f.readline())
-        f.close
+        evalcount = read_evalcount()
         
-        if eval_count < config.EVAL_EPISODES:
+        if evalcount[3] < config.EVAL_EPISODES:
             print('Wating for evaluations...')
             time.sleep(120)
         else:
             break
 
-def eval_reset():
-    f = open('evalcount.txt', mode = 'wt', encoding = 'utf-8')
-    f.write(str(0)+'\n')
-    f.write(str(0)+'\n')
-    f.write(str(0)+'\n')
-    f.write(str(0))
-    f.close()
+def eval_reset():    # current_player 승리 시 1, 아니면 0
+    evalcount = read_evalcount()
+    evalcount[0] = 0
+    evalcount[1] = 0
+    evalcount[2] = 0
+    evalcount[3] = 0
+    #if win == 1:
+    #    evalcount[4] += 1
+    write_evalcount(evalcount)
+
 
 def add_score(scores, player1, player2):
 # game eval횟수만큼 채웠으면 더 이상 돌리지 않고 대기
 # scores = {'current_player':0, "drawn": 0, 'best_player':1}
 # scores = {player1.name:0, "drawn": 0, player2.name:0}
-    f = open('evalcount.txt', mode = 'rt', encoding = 'utf-8')
-    player1_score = int(f.readline())
-    drawn_score = int(f.readline())
-    player2_score = int(f.readline())
-    eval_count = int(f.readline())
-    f.close
+
+    evalcount = read_evalcount()
 
     if scores[player1.name] == 1:
-        player1_score += 1
+        evalcount[0] += 1
     elif scores['drawn'] == 1:
-        drawn_score += 1
+        evalcount[1] += 1
     else:
-        player2_score += 1
+        evalcount[2] += 1
 
-    f = open('evalcount.txt', mode = 'wt', encoding = 'utf-8')
-    f.write(str(player1_score)+'\n')
-    f.write(str(drawn_score)+'\n')
-    f.write(str(player2_score)+'\n')
-    f.write(str(eval_count))
-    f.close()
+    write_evalcount(evalcount)
 
-    print({player1.name:player1_score, "drawn": drawn_score, player2.name:player2_score})
+    print({player1.name:evalcount[0], "drawn": evalcount[1], player2.name:evalcount[2]})
     
-    return {player1.name : player1_score, "drawn": drawn_score, player2.name : player2_score}
+    return {player1.name : evalcount[0], "drawn": evalcount[1], player2.name : evalcount[2]}
+
+def best_player_version():
+    evalcount = read_evalcount()
+    return evalcount[4]
+
+def read_evalcount():
+    while 1:
+        f = open('evalcount.txt', mode = 'rt', encoding = 'utf-8')
+        lines = f.readlines()
+        f.close
+
+        if lines: # 비어있으면 다시 읽어옴
+            break
+
+    lines = list(map(int, lines))
+    return lines
+
+def write_evalcount(lines):
+        f = open('evalcount.txt', mode = 'wt', encoding = 'utf-8')
+        f.writelines(lines)
+        f.close
+
+        return 0
+
 
 #while (player1 + drawn + player2) >= config.EVAL_EPISODES or eval_count >= config.EVAL_EPISODES:
 #    time.sleep(sleep_time)
