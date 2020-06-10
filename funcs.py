@@ -80,6 +80,7 @@ def playMatches(player1, player2, EPISODES, logger, turns_until_tau0, memory = N
 
         while done == 0:
             turn = turn + 1
+            
     
             #### Run the MCTS algo and return an action
             if turn < turns_until_tau0:
@@ -116,7 +117,7 @@ def playMatches(player1, player2, EPISODES, logger, turns_until_tau0, memory = N
                     memory.commit_ltmemory()
              
                 if value == 1:
-                    logger.info('%s WINS!', players[state.playerTurn]['name'])
+                    logger.info('%s WINS! player: %d', players[state.playerTurn]['name'], value)
                     scores[players[state.playerTurn]['name']] = scores[players[state.playerTurn]['name']] + 1
                     if state.playerTurn == 1: 
                         sp_scores['sp'] = sp_scores['sp'] + 1
@@ -124,7 +125,7 @@ def playMatches(player1, player2, EPISODES, logger, turns_until_tau0, memory = N
                         sp_scores['nsp'] = sp_scores['nsp'] + 1
 
                 elif value == -1:
-                    logger.info('%s WINS!', players[-state.playerTurn]['name'])
+                    logger.info('%s WINS! player: %d', players[-state.playerTurn]['name'], value)
                     scores[players[-state.playerTurn]['name']] = scores[players[-state.playerTurn]['name']] + 1
                
                     if state.playerTurn == 1: 

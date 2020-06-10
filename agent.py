@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 from IPython import display
 import pylab as pl
 
+from datetime import datetime
+
 
 class User():
 	def __init__(self, name, state_size, action_size):
@@ -23,11 +25,11 @@ class User():
 		self.action_size = action_size
 
 	def act(self, state, tau):
-		action = input('Enter your chosen action: ')
+		action = int(input('Enter your chosen action: '))
 		pi = np.zeros(self.action_size)
 		pi[action] = 1
-		value = None
-		NN_value = None
+		value = 0
+		NN_value = 0
 		return (action, pi, value, NN_value)
 
 
@@ -85,6 +87,8 @@ class Agent():
 			lg.logger_mcts.info('***************************')
 			self.simulate()
 
+		
+
 		#### get action values
 		pi, values = self.getAV(1)
 
@@ -93,7 +97,11 @@ class Agent():
 
 		nextState, _, _ = state.takeAction(action)
 
-		NN_value = -self.get_preds(nextState)[0]
+		if nextState.playerTurn == state.playerTurn:
+			NN_value = self.get_preds(nextState)[0]
+        
+		else:
+			NN_value = -self.get_preds(nextState)[0]
 
 		lg.logger_mcts.info('ACTION VALUES...%s', pi)
 		lg.logger_mcts.info('CHOSEN ACTION...%d', action)
@@ -140,6 +148,9 @@ class Agent():
 
 			for idx, action in enumerate(allowedActions):
 				newState, _, _ = leaf.state.takeAction(action)
+				
+				self.mcts.recentnodeid[newState.id] = newState.id
+
 				if newState.id not in self.mcts.tree:
 					node = mc.Node(newState)
 					self.mcts.addNode(node)
@@ -205,6 +216,7 @@ class Agent():
 		plt.plot(self.train_policy_loss, 'k--')
 
 		plt.legend(['train_overall_loss', 'train_value_loss', 'train_policy_loss'], loc='lower left')
+		# plt.savefig('run/logs/loss_{}.svg'.format(datetime.now().strftime("%Y%m%d-%H%M%S")))
 
 		display.clear_output(wait=True)
 		display.display(pl.gcf())
@@ -223,6 +235,11 @@ class Agent():
 		self.root = mc.Node(state)
 		self.mcts = mc.MCTS(self.root, self.cpuct)
 
-	def changeRootMCTS(self, state):
+	def changeRootMCTS(self, state):	
 		lg.logger_mcts.info('****** CHANGING ROOT OF MCTS TREE TO %s FOR AGENT %s ******', state.id, self.name)
-		self.mcts.root = self.mcts.tree[state.id]
+		# self.mcts.root = self.mcts.tree[state.id]
+		temp_mcts = mc.MCTS(self.mcts.tree[state.id], self.cpuct)
+		for (idx, nodeid) in enumerate(self.mcts.recentnodeid):
+			if nodeid in self.mcts.tree:	# 최근 방문한 노드로 기록되었는데 트리에 없는 문제때문에 if문 추가
+				temp_mcts.addNode(self.mcts.tree[nodeid])
+		self.mcts = temp_mcts
