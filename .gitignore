@@ -110,6 +110,8 @@ games/archive/
 *.pyc
 run/
 
+venv
+
 ### macOS ###
 # General
 .DS_Store
