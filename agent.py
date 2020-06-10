@@ -97,6 +97,7 @@ class Agent():
 
 		nextState, _, _ = state.takeAction(action)
 
+		# TODO: 확인 필요!!!
 		if nextState.playerTurn == state.playerTurn:
 			NN_value = self.get_preds(nextState)[0]
         
@@ -235,6 +236,7 @@ class Agent():
 		self.root = mc.Node(state)
 		self.mcts = mc.MCTS(self.root, self.cpuct)
 
+	# TODO: 확인 필요!!!
 	def changeRootMCTS(self, state):	
 		lg.logger_mcts.info('****** CHANGING ROOT OF MCTS TREE TO %s FOR AGENT %s ******', state.id, self.name)
 		# self.mcts.root = self.mcts.tree[state.id]

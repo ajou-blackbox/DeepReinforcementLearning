@@ -8,6 +8,7 @@ INIT_CURRENT_PLAYER = -1
 # INIT_BOARD[int(ROW*COL/2)] = -INIT_CURRENT_PLAYER	# 첫 수로 정중앙에 한 수를 놓음
 WIN_COUNT = 6
 
+# TODO: 파일 전체적으로 확인 필요!!!
 class Game:
 
 	def __init__(self):

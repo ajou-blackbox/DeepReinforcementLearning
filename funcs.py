@@ -117,6 +117,7 @@ def playMatches(player1, player2, EPISODES, logger, turns_until_tau0, memory = N
                     memory.commit_ltmemory()
              
                 if value == 1:
+                    # TODO: player 제대로 나오는거 맞나? 확인 필요!!! & value가 이상했던거 같음 (질 상황에서 1.0을 확신한다던지..)
                     logger.info('%s WINS! player: %d', players[state.playerTurn]['name'], value)
                     scores[players[state.playerTurn]['name']] = scores[players[state.playerTurn]['name']] + 1
                     if state.playerTurn == 1: 
