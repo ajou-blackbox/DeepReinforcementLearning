@@ -240,6 +240,6 @@ class Agent():
 		# self.mcts.root = self.mcts.tree[state.id]
 		temp_mcts = mc.MCTS(self.mcts.tree[state.id], self.cpuct)
 		for (idx, nodeid) in enumerate(self.mcts.recentnodeid):
-			if nodeid in self.mcts.tree:	# 최근 방문한 노드로 기록되었는데 트리에 없는 문제때문에 if문 추가
-				temp_mcts.addNode(self.mcts.tree[nodeid])
+			#if nodeid in self.mcts.tree:	# 최근 방문한 노드로 기록되었는데 트리에 없는 문제때문에 if문 추가
+			temp_mcts.addNode(self.mcts.tree[nodeid])
 		self.mcts = temp_mcts
