@@ -13,6 +13,7 @@ from keras.utils import plot_model
 
 from game import Game, GameState
 from agent import Agent
+from agent import User
 from memory import Memory
 from model import Residual_CNN
 from funcs import playMatches, playMatchesBetweenVersions
@@ -23,7 +24,6 @@ from settings import run_folder, run_archive_folder
 import initialise
 import pickle
 
-from limiter import Limiter
 
 
 lg.logger_main.info('=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*')
@@ -74,10 +74,9 @@ print('\n')
 
 current_player = Agent('current_player', env.state_size, env.action_size, config.MCTS_SIMS, config.CPUCT, current_NN)
 best_player = Agent('best_player', env.state_size, env.action_size, config.MCTS_SIMS, config.CPUCT, best_NN)
-#user_player = User('player1', env.state_size, env.action_size)
+user_player = User('player1', env.state_size, env.action_size)
 iteration = 0
 
-lim = Limiter()
 
 while 1:
 
@@ -92,11 +91,11 @@ while 1:
 
     ######## SELF PLAY ########
     print('SELF PLAYING ' + str(config.EPISODES) + ' EPISODES...')
-    _, memory, _, _ = playMatches(best_player, best_player, config.EPISODES, lg.logger_main, turns_until_tau0 = config.TURNS_UNTIL_TAU0, memory = memory)
+    _, memory, _, _ = playMatches(best_player, user_player, config.EPISODES, lg.logger_main, turns_until_tau0 = config.TURNS_UNTIL_TAU0, memory = memory)
     print('\n')
     
     memory.clear_stmemory()
-    
+    '''
     if len(memory.ltmemory) >= config.MEMORY_SIZE:
 
         ######## RETRAINING ########
@@ -154,3 +153,4 @@ while 1:
 
     lim.check_time(auto = True) # 시간 검사
     lim.check_iteration(iteration)  # iteration 수 검사
+    '''
