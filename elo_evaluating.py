@@ -30,16 +30,17 @@ import time
 import os
 
 import random
+import operator
 
 env = Game()
 
 
 EVAL_COUNT = 1  # 몇 번 대전 수행할지 설정
 EVAL_COUNT_ONETIME = 1  # 한 번 만나면 몇회전 할 지 설정
-MCTS_SIMS = 5
+MCTS_SIMS = 50
 
 MODEL_START = 1 # 몇 번 모델 버전부터 평가에 사용할지 결정
-MODEL_SPACE = 2 # 평가할 모델 버전 간격
+MODEL_SPACE = 10 # 평가할 모델 버전 간격
 HIGHEST_VERSION = 500 # 가장 높은 버전
 
 INIT_RATING = 500 # 초기 ELO Rating
@@ -57,12 +58,20 @@ def check_model():  # 사용할 모델 존재 체크
             using_model.append(version)
     return using_model
 
-def pick_model(using_model):    # 사용할 모델 중 2개 고름(현 랜덤)
+def pick_model_random(using_model):    # 사용할 모델 중 랜덤하게 2개 고름
     model1 = random.choice(using_model)
     model2 = random.choice(using_model)
     while model2 == model1:
         model2 = random.choice(using_model)
     return model1, model2
+
+def pick_model(using_model, eval_num):  # 각 모델간 플레이 횟수 동일해지도록 모델 2개 고름
+    min_pair_key = min(eval_num.items(), key=operator.itemgetter(1))[0]
+    border = min_pair_key.find('-')
+    model1 = int(min_pair_key[0:border])
+    model2 = int(min_pair_key[border+1:])
+    return model1, model2
+    
 
 def load_record():  # 게임 기록 불러옴
     if not os.path.exists('./ratings/eval_record.pickle'):
@@ -87,6 +96,28 @@ def save_record(record, model1, model2, result):    # 게임 기록 저장
 def save_record_direct(record):
     with open('./ratings/eval_record.pickle', 'wb') as handle:
         pickle.dump(record, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+def get_eval_number(record, using_model):   # 각 매칭 몇 번 있었는지 dict로 정리
+    eval_num = {}
+    for record_num in range(len(record)):
+        if record[record_num][0] > record[record_num][1]:
+            player1 = record[record_num][1]
+            player2 = record[record_num][0]
+        else:
+            player1 = record[record_num][0]
+            player2 = record[record_num][1]
+        if str(player1) + '-' + str(player2) in eval_num :
+            eval_num[str(player1) + '-' + str(player2)] += 1
+        else:
+            eval_num[str(player1) + '-' + str(player2)] = 1
+
+        for i in range(len(using_model)-1):
+            for j in range(i+1, len(using_model)):
+                if str(using_model[i]) + '-' + str(using_model[j]) not in eval_num:
+                    eval_num[str(using_model[i]) + '-' + str(using_model[j])] = 0
+
+    return eval_num
+
 
 
 def load_elo(): # elo 기록 불러옴
@@ -126,10 +157,6 @@ def calc_elo(elo, record): # 첫 판이면 기본점수 부여, 배치 감안 �
             if elo_len < model2:
                 for model_num in range(elo_len, model2+1):
                     elo.append([INIT_RATING, 0])
-
-            print(len(elo))
-            print(model1)
-            print(model2)
 
             model1_rating = elo[model1][0]
             model2_rating = elo[model2][0]
