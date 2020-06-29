@@ -91,7 +91,7 @@ while 1:
 
     ######## SELF PLAY ########
     print('SELF PLAYING ' + str(config.EPISODES) + ' EPISODES...')
-    _, memory, _, _ = playMatches(best_player, user_player, config.EPISODES, lg.logger_main, turns_until_tau0 = config.TURNS_UNTIL_TAU0, memory = memory)
+    _, memory, _, _ = playMatches(best_player, current_player, config.EPISODES, lg.logger_main, turns_until_tau0 = config.TURNS_UNTIL_TAU0, memory = memory)
     print('\n')
     
     memory.clear_stmemory()

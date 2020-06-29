@@ -44,7 +44,7 @@ MODEL_SPACE = 10 # 평가할 모델 버전 간격
 HIGHEST_VERSION = 500 # 가장 높은 버전
 
 INIT_RATING = 500 # 초기 ELO Rating
-ELO_CONST = 20  # ELO 계산에 사용하는 상수 K (프로 : 16, 일반 : 32)
+ELO_CONST = 20  # ELO 계산에 사용하는 상수 K (프로 : 16, 일반 : 32) / 20 40
 ELO_CONST_NEW = 40  # 배치고사 시 사용하는 K
 PLACEMENT_COUNT = 10 # 배치고사 판수
 
@@ -87,6 +87,11 @@ def load_record():  # 게임 기록 불러옴
         else:
             return record
 
+            
+def shuffle_record(record):
+    random.shuffle(record)
+    return record
+
 def save_record(record, model1, model2, result):    # 게임 기록 저장
     record.append([model1, model2, result, 0]) # 출력값은 Nonetype임에 주의
     with open('./ratings/eval_record.pickle', 'wb') as handle:
@@ -96,6 +101,12 @@ def save_record(record, model1, model2, result):    # 게임 기록 저장
 def save_record_direct(record):
     with open('./ratings/eval_record.pickle', 'wb') as handle:
         pickle.dump(record, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+def reset_record(record):   # record의 모든 기록을 사용하지 않은 것으로 함
+    for i in range(len(record)):
+        record[i][3] = 0
+    save_record_direct(record)
+    print('Reset Complete')
 
 def get_eval_number(record, using_model):   # 각 매칭 몇 번 있었는지 dict로 정리
     eval_num = {}
@@ -133,6 +144,7 @@ def load_elo(): # elo 기록 불러옴
             return []
         else:
             return elo
+
 
 def save_elo(elo):
     with open('./ratings/elo.pickle', 'rb') as handle:
@@ -189,10 +201,10 @@ def calc_elo(elo, record): # 첫 판이면 기본점수 부여, 배치 감안 �
             model1_rating = model1_rating + model1_elo_const * (elo_s1 - p1)
             model2_rating = model2_rating + model2_elo_const * (elo_s2 - p2)
 
-            if model1_rating < 0:
-                model1_rating = 0
-            if model2_rating < 0:
-                model2_rating = 0
+            # if model1_rating < 0:
+            #    model1_rating = 0
+            # if model2_rating < 0:
+            #    model2_rating = 0
 
             # elo 갱신
             elo[model1][0] = round(model1_rating)
@@ -201,7 +213,7 @@ def calc_elo(elo, record): # 첫 판이면 기본점수 부여, 배치 감안 �
             elo[model2][1] += 1
 
             # record 사용했다고 표시
-            record[record_num][3] = 1
+            #record[record_num][3] = 1
 
             with open('./ratings/elo.pickle', 'wb') as handle:
                 pickle.dump(elo, handle, protocol=pickle.HIGHEST_PROTOCOL)  # 새 elo 저장
